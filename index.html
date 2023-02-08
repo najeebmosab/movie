@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    #container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 80%;
+        margin: 10px auto;
+    }
+
+    .card {
+        background-color: #dcdcdc;
+        border-radius: 10px;
+        height: fit-content;
+        text-align: center;
+    }
+
+    ul {
+        list-style: none;
+    }
+</style>
+
+<body>
+    <input type="text" id="inputSearch">
+    <button id="btnSearch">Search</button>
+    <div id="container">
+        <div class="card"></div>
+    </div>
+</body>
+<script>
+    const btnSearch = document.querySelector("#btnSearch");
+    const inputSearch = document.querySelector("#inputSearch");
+    const card = document.querySelector(".card");
+    const container = document.querySelector("#container");
+    window.onload = inputSearch.focus();
+    window.addEventListener("keydown", (event) => {
+        if (event.code === "Enter") {
+            getMovieData(inputSearch.value)
+        }
+    });
+    btnSearch.addEventListener("click", () => {
+        getMovieData(inputSearch.value);
+    });
+
+    async function getMovieData(movieTitle) {
+        if (movieTitle !== "") {
+            try {
+                const apiKey = "33f4909d";
+                const response = await fetch(`http://www.omdbapi.com/?apikey=${apiKey}&t=${movieTitle}`);
+                const data = await response.json();
+                const img = document.createElement("img");
+                const h2 = document.createElement("h2");
+                const h3 = document.createElement("h3");
+                const p = document.createElement("p");
+                const p2 = document.createElement("p");
+                const ul = document.createElement("ul");
+                const li = document.createElement("li");
+                img.src = data.Poster;
+                h2.innerHTML = data.Title;
+                h3.innerHTML = data.Genre;
+                p.innerHTML = data.Year;
+                p2.innerHTML = data.Plot;
+                li.innerHTML = data.Director;
+                ul.appendChild(li);
+                const Actors = data.Actors.split(',');
+                Actors.forEach(element => {
+                    const li = document.createElement("li");
+                    li.innerHTML = element;
+                    ul.appendChild(li);
+                });
+                card.appendChild(img);
+                card.appendChild(h2);
+                card.appendChild(h3);
+                card.appendChild(p);
+                card.appendChild(p2);
+                card.appendChild(ul);
+                console.log(Actors);
+
+                console.log(data);
+                inputSearch.value = "";
+            } catch (err) {
+                console.log(err);
+            }
+        }
+        else {
+            alert("please Enter name")
+        }
+
+    }
+
+</script>
+
+</html>
